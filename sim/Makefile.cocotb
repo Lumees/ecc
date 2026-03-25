@@ -1,0 +1,35 @@
+TOPLEVEL_LANG := verilog
+SIM           := verilator
+TOPLEVEL ?= ecc_top
+MODULE   ?= test_ecc_top
+
+DATA_W ?= 32
+
+RTL_DIR   := $(realpath ../rtl)
+TB_DIR    := $(realpath ../tb/directed)
+MODEL_DIR := $(realpath ../model)
+
+VERILOG_SOURCES := $(RTL_DIR)/ecc_pkg.sv $(RTL_DIR)/ecc_core.sv $(RTL_DIR)/ecc_top.sv
+
+COMPILE_ARGS += +define+ECC_PKG_DATA_W=$(DATA_W)
+COMPILE_ARGS += --timing -Wno-WIDTHTRUNC -Wno-WIDTHEXPAND -Wno-CASEINCOMPLETE
+
+export ECC_DATA_W=$(DATA_W)
+export PYTHONPATH := $(TB_DIR):$(MODEL_DIR):$(PYTHONPATH)
+
+SIM_BUILD := sim_build_ecc$(DATA_W)
+
+include $(shell cocotb-config --makefiles)/Makefile.sim
+
+.PHONY: sim-8 sim-16 sim-32 sim-axil sim-all
+sim-8:  ; $(MAKE) -f Makefile.cocotb DATA_W=8
+sim-16: ; $(MAKE) -f Makefile.cocotb DATA_W=16
+sim-32: ; $(MAKE) -f Makefile.cocotb DATA_W=32
+
+sim-axil:
+	$(MAKE) -f Makefile.cocotb \
+		TOPLEVEL=ecc_axil MODULE=test_ecc_axil \
+		VERILOG_SOURCES="$(RTL_DIR)/ecc_pkg.sv $(RTL_DIR)/ecc_core.sv $(RTL_DIR)/ecc_top.sv $(RTL_DIR)/ecc_axil.sv" \
+		SIM_BUILD=sim_build_ecc_axil
+
+sim-all: sim-8 sim-16 sim-32
