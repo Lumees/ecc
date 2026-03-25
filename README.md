@@ -72,18 +72,18 @@ Set data width at compile time via `` `define ECC_PKG_DATA_W <N> `` or leave uns
                │                                                    │
  enc_valid_i ──┤──►┌──────────────────────────────────┐             │
  enc_data_i  ──┤   │           ecc_core               │──► enc_code_o
-               │   │       (combinational)             │    enc_valid_o
-               │   │                                   │             │
-               │   │  ENCODER                          │             │
-               │   │    data → place non-2^i pos       │             │
-               │   │    → Hamming parity (2^i pos)     │             │
-               │   │    → overall parity (pos 0)       │             │
-               │   │                                   │             │
- dec_valid_i ──┤   │  DECODER                          │──► dec_data_o
- dec_code_i  ──┤──►│    syndrome = XOR parity groups   │    dec_status_o
-               │   │    overall = XOR all bits         │    dec_syndrome_o
-               │   │    SEC: flip corrected[syndrome]  │    dec_valid_o
-               │   │    DED: syndrome≠0 & overall=0    │             │
+               │   │       (combinational)            │    enc_valid_o
+               │   │                                  │             │
+               │   │  ENCODER                         │             │
+               │   │    data → place non-2^i pos      │             │
+               │   │    → Hamming parity (2^i pos)    │             │
+               │   │    → overall parity (pos 0)      │             │
+               │   │                                  │             │
+ dec_valid_i ──┤   │  DECODER                         │──► dec_data_o
+ dec_code_i  ──┤──►│    syndrome = XOR parity groups  │    dec_status_o
+               │   │    overall = XOR all bits        │    dec_syndrome_o
+               │   │    SEC: flip corrected[syndrome] │    dec_valid_o
+               │   │    DED: syndrome≠0 & overall=0   │             │
                │   └──────────────────────────────────┘             │
                │                                                    │
  version_o   ◄─┤  IP_VERSION = 0x00010000                           │
